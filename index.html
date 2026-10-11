@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Какая профессия тебе подходит? Мини-тест Ventorme</title>
+<meta name="description" content="3 вопроса без регистрации и быстрый результат. Точный разбор профессий бесплатно в Ventorme.">
+<meta property="og:title" content="Какая профессия тебе подходит?">
+<meta property="og:description" content="3 вопроса без регистрации. Точный разбор бесплатно в Ventorme.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#3B47FF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #3B47FF;
+    --blue-deep: #2A33D6;
+    --lime: #DFFF00;
+    --ink: #1C1C28;
+    --muted: #5A5C70;
+    --paper: #F5F6FB;
+    --line: #E3E5F1;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font: 400 16px/1.5 Onest, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--lime); outline-offset: 2px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+  /* header: register is always one tap away, nothing ever covers it */
+  .top {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--blue);
+    padding-top: env(safe-area-inset-top);
+  }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 12px; }
+  .brand { color: var(--white); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; text-decoration: none; }
+  .brand i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--lime); margin-left: 2px; vertical-align: super; }
+  .pill {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px;
+    border-radius: 999px; background: var(--lime); color: var(--ink);
+    font-weight: 700; font-size: 15px; text-decoration: none; white-space: nowrap;
+  }
+
+  /* hero: the quiz is the hero, answerable without a "start" tap */
+  .hero { background: linear-gradient(var(--blue) 0 calc(100% - 96px), var(--paper) 0); padding: 12px 0 0; }
+  .hero .wrap { display: grid; gap: 16px; }
+  h1 {
+    margin: 4px 0 0; color: var(--white);
+    font-size: clamp(32px, 9vw, 60px); line-height: 1.04; font-weight: 800; letter-spacing: -0.035em;
+    max-width: 16ch;
+  }
+  .lead { margin: 0; color: #DDE0FF; font-size: 16px; max-width: 34ch; }
+
+  .quiz {
+    background: var(--lime); border-radius: 24px; padding: 16px;
+    box-shadow: 0 24px 48px -24px rgba(28, 28, 40, .45);
+  }
+  .quiz-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+  .bars { display: flex; gap: 4px; margin: 10px 0 12px; }
+  .bars span { flex: 1; height: 4px; border-radius: 2px; background: rgba(28, 28, 40, .15); transition: background .25s; }
+  .bars span.on { background: var(--blue); }
+  .friend { margin: 0 0 8px; font-size: 14px; font-weight: 500; }
+  .q { margin: 0 0 12px; font-size: 20px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
+  .opts { display: grid; gap: 8px; }
+  .opt {
+    display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 10px 14px;
+    text-align: left; border: 2px solid transparent; border-radius: 14px; background: var(--white);
+    font-size: 15px; line-height: 1.3; cursor: pointer;
+  }
+  .opt::before { content: ""; flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--blue); }
+  .opt:hover { border-color: rgba(59, 71, 255, .35); }
+  .opt[aria-pressed="true"] { border-color: var(--blue); }
+  .opt[aria-pressed="true"]::before { background: var(--blue); box-shadow: inset 0 0 0 3px var(--white); }
+
+  .result[hidden], .quiz-body[hidden] { display: none; }
+  .result { animation: rise .35s ease-out; }
+  .rtype { display: flex; align-items: center; gap: 12px; margin: 4px 0 8px; }
+  .rtype .ic { font-size: 40px; line-height: 1; }
+  .rtype h2 { margin: 0; font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; }
+  .rtype small { display: block; font-size: 14px; font-weight: 500; }
+  .result p { margin: 0 0 10px; font-size: 15px; }
+  .dirs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+  .dirs li { background: var(--white); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 500; }
+  .fine { font-size: 13px !important; color: #3D3F12; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .ghost {
+    min-height: 44px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--ink);
+    background: transparent; font-weight: 700; font-size: 14px; cursor: pointer;
+  }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 54px; padding: 0 20px;
+    border-radius: 16px; background: var(--blue); color: var(--white);
+    font-weight: 700; font-size: 17px; text-decoration: none; text-align: center;
+  }
+  .btn:hover { background: var(--blue-deep); }
+  .skip { display: inline-block; margin: 14px 0 4px; color: var(--ink); font-weight: 500; font-size: 15px; }
+
+  /* shown only inside Instagram / Facebook / TikTok / Telegram webviews */
+  .inapp-note { display: none; margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--white); border: 1px solid var(--line); font-size: 14px; line-height: 1.4; }
+  html.inapp .inapp-note { display: block; }
+  .inapp-note b { display: block; margin-bottom: 4px; }
+  .inapp-note a.chrome { display: none; margin-top: 8px; font-weight: 700; color: var(--blue); }
+  html.android .inapp-note a.chrome { display: inline-block; }
+  html.android .inapp-note .ios { display: none; }
+
+  section { padding: 40px 0 8px; }
+  section .wrap > * { max-width: 640px; }
+  h2.sec { margin: 0 0 14px; font-size: clamp(24px, 6vw, 34px); line-height: 1.1; letter-spacing: -0.025em; }
+  .free { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .free li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 16px; }
+  .free li::before { content: ""; width: 22px; height: 22px; margin-top: 1px; border-radius: 50%; background: var(--lime) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%231C1C28' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat; }
+  .note { margin: 16px 0 0; color: var(--muted); font-size: 15px; }
+
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 14px; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+  .steps li::before {
+    content: counter(s); display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px;
+    background: var(--blue); color: var(--white); font-weight: 800;
+  }
+  .steps b { display: block; }
+  .steps span { color: var(--muted); font-size: 15px; }
+
+  .parents { background: var(--white); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 40px; padding-bottom: 32px; }
+  .parents p { margin: 0 0 14px; }
+
+  details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+  summary { cursor: pointer; font-weight: 700; font-size: 16px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-weight: 500; font-size: 22px; line-height: 1; color: var(--blue); }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 10px 0 0; color: var(--muted); }
+
+  .end { background: var(--blue); color: var(--white); margin-top: 40px; padding: 40px 0; }
+  .end h2 { margin: 0 0 6px; font-size: clamp(26px, 7vw, 40px); letter-spacing: -0.03em; line-height: 1.05; }
+  .end p { margin: 0 0 18px; color: #DDE0FF; }
+  .end .btn { background: var(--lime); color: var(--ink); max-width: 420px; }
+  footer { background: var(--blue); color: #DDE0FF; font-size: 13px; padding: 0 0 calc(28px + env(safe-area-inset-bottom)); }
+  footer p { margin: 0; max-width: 640px; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: var(--white); padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 20; }
+  .toast[hidden] { display: none; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .result { animation: none; } .bars span { transition: none; } }
+
+  @media (min-width: 900px) {
+    .hero { background: linear-gradient(var(--blue) 0 calc(100% - 64px), var(--paper) 0); padding-top: 48px; }
+    .hero .wrap { grid-template-columns: 1fr 440px; align-items: start; gap: 48px; }
+    .hero .intro { padding-top: 24px; }
+    .lead { font-size: 19px; margin-top: 18px; }
+    .quiz { padding: 22px; }
+    section { padding-top: 64px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Ventorme">ventorme<i></i></a>
+    <a class="pill cta" data-where="header" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Зарегистрироваться</a>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <div class="intro">
+        <h1>Какая профессия тебе подходит?</h1>
+        <p class="lead">Ответь на 3 вопроса прямо здесь, без регистрации. Точный разбор бесплатно покажет Ventorme.</p>
+      </div>
+
+      <div>
+        <div class="quiz" id="quiz" aria-live="polite">
+          <div class="quiz-body" id="quizBody">
+            <div class="quiz-meta"><span id="step">Вопрос 1 из 3</span><span>без регистрации</span></div>
+            <div class="bars" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+            <p class="friend" id="friend" hidden></p>
+            <p class="q" id="question"></p>
+            <div class="opts" id="options"></div>
+          </div>
+
+          <div class="result" id="result" hidden>
+            <div class="rtype">
+              <span class="ic" id="rIcon"></span>
+              <h2><small>Твой тип</small><span id="rName"></span></h2>
+            </div>
+            <p id="rText"></p>
+            <p><b>Часто подходят:</b></p>
+            <ul class="dirs" id="rDirs"></ul>
+            <p class="fine">Это быстрый предпросмотр по трём ответам, не диагноз. Точный результат, 3 направления и разбор сильных сторон, Ventorme покажет бесплатно после регистрации.</p>
+            <a class="btn cta" data-where="result" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Зарегистрироваться и узнать точно</a>
+            <div class="inapp-note">
+              <b>Страница открыта внутри <span class="app">приложения</span></b>
+              Google не даёт входить через свой аккаунт во встроенных браузерах. Регистрируйся по почте или открой страницу в обычном браузере<span class="ios">: нажми ⋯ в углу и выбери «Открыть в браузере»</span>.
+              <br><a class="chrome cta" data-where="chrome-result" href="#">Открыть регистрацию в Chrome</a>
+            </div>
+            <div class="row">
+              <button class="ghost" id="shareBtn" type="button">Поделиться результатом</button>
+              <button class="ghost" id="againBtn" type="button">Пройти заново</button>
+            </div>
+          </div>
+        </div>
+        <a class="skip cta" data-where="skip" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Пропустить тест и сразу зарегистрироваться</a>
+        <div class="inapp-note">
+          <b>Страница открыта внутри <span class="app">приложения</span></b>
+          Вход через Google здесь может не сработать. Регистрируйся по почте или открой страницу в обычном браузере<span class="ios">: нажми ⋯ в углу и выбери «Открыть в браузере»</span>.
+          <br><a class="chrome cta" data-where="chrome-hero" href="#">Открыть регистрацию в Chrome</a>
+        </div>
+        <noscript><p>Тест работает с включённым JavaScript. Зарегистрироваться можно кнопкой вверху.</p></noscript>
+      </div>
+    </div>
+  </div>
+
+  <section id="free">
+    <div class="wrap">
+      <h2 class="sec">Что бесплатно после регистрации</h2>
+      <ul class="free">
+        <li>Результат теста: 3 подходящих направления и разбор сильных сторон</li>
+        <li>Проверка уровня английского для IELTS</li>
+        <li>Проверка уровня для SAT</li>
+        <li>Портфолио: достижения и данные для заявок в одном месте</li>
+      </ul>
+      <p class="note">Подбор вузов и грантов, план с дедлайнами и полная подготовка к экзаменам входят в платный тариф Plus. Чтобы начать, он не нужен, карта при регистрации не нужна.</p>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2 class="sec">Как зарегистрироваться</h2>
+      <ol class="steps">
+        <li><div><b>Нажми «Зарегистрироваться»</b><span>Откроется официальный сайт ventorme.ai.</span></div></li>
+        <li><div><b>Войди через Google или почту</b><span>Отметь галочку согласия: пока её нет, кнопка «Продолжить» не нажимается. Если регистрируешься по почте, введи код из письма.</span></div></li>
+        <li><div><b>Ответь на стартовые вопросы до конца</b><span>После них Ventorme откроет твой результат.</span></div></li>
+      </ol>
+      <div class="inapp-note">
+        <b>Страница открыта внутри <span class="app">приложения</span></b>
+        Если кнопка Google не реагирует, выбери регистрацию по почте<span class="ios"> или нажми ⋯ в углу и «Открыть в браузере»</span>.
+        <br><a class="chrome cta" data-where="chrome-steps" href="#">Открыть регистрацию в Chrome</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="parents" id="parents">
+    <div class="wrap">
+      <h2 class="sec">Родителям</h2>
+      <p>В Ventorme родитель видит дедлайны, статусы заявок и бюджет по каждому вузу. Личная переписка ребёнка с AI-помощником остаётся закрытой.</p>
+      <button class="ghost" id="parentsBtn" type="button">Отправить родителям</button>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <h2 class="sec">Вопросы</h2>
+      <details><summary>Это правда бесплатно?</summary><p>Да, регистрация и стартовые функции бесплатны, карта не нужна. Тариф Plus можно подключить позже или не подключать вовсе.</p></details>
+      <details><summary>На каком языке Ventorme?</summary><p>На русском, казахском и английском, а ещё на китайском и узбекском. Язык переключается на сайте.</p></details>
+      <details><summary>Кто сделал эту страницу?</summary><p>Команда 069 хакатона HACKNEXT × Ventorme. Все кнопки регистрации ведут на официальный сайт ventorme.ai, регистрация и данные остаются там.</p></details>
+      <details><summary>Что с моими данными?</summary><p>Эта страница не собирает личные данные. При регистрации данные хранит Ventorme по своей <a href="https://ventorme.ai/privacy">политике конфиденциальности</a>.</p></details>
+    </div>
+  </section>
+
+  <div class="end">
+    <div class="wrap">
+      <h2>Начни с бесплатного теста</h2>
+      <p>Регистрация на ventorme.ai, вход через Google или почту.</p>
+      <a class="btn cta" data-where="end" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Зарегистрироваться бесплатно</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Страница команды 069 хакатона HACKNEXT × Ventorme. Ventorme находится по адресу ventorme.ai. <span id="ymNote" hidden>Мы считаем посещения с помощью Яндекс Метрики, без личных данных.</span></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+  // Every registration button must point here: registrations are credited by this exact link.
+  const TEAM_LINK = 'https://ventorme.ai/register?utm_source=hacknext&utm_campaign=team-069';
+  // Yandex Metrica counter id (metrika.yandex.ru). 0 = off, no tracking and no notice.
+  const YM_ID = 0;
+
+  const TYPES = {
+    a: { icon: '🧠', name: 'Аналитик', text: 'Тебе нравится находить закономерности и проверять выводы цифрами.', dirs: ['Data Science', 'Экономика и финансы', 'Бизнес-аналитика'] },
+    c: { icon: '🎨', name: 'Творец', text: 'Тебя заряжают идеи и то, как вещи выглядят и звучат.', dirs: ['UX/UI-дизайн', 'Медиа и коммуникации', 'Архитектура'] },
+    p: { icon: '💬', name: 'Коммуникатор', text: 'Тебе интересны люди: понимать их, объяснять, договариваться.', dirs: ['Психология', 'Международные отношения', 'Маркетинг'] },
+    e: { icon: '🛠️', name: 'Инженер', text: 'Тебе интересно, как всё устроено, и хочется собирать это самому.', dirs: ['Computer Science', 'Робототехника', 'Инженерия'] },
+  };
+  const QUESTIONS = [
+    { q: 'Свободный вечер. Что выберешь?', o: [['a', 'Задачу или головоломку, где надо найти ответ'], ['c', 'Нарисовать, смонтировать видео, что-то сочинить'], ['p', 'Встретиться с друзьями или помочь кому-то разобраться'], ['e', 'Разобрать гаджет, собрать модель, написать код']] },
+    { q: 'Какой предмет тебе ближе?', o: [['e', 'Физика, информатика'], ['a', 'Математика'], ['p', 'История, общество, языки'], ['c', 'Литература, искусство, музыка']] },
+    { q: 'В групповом проекте ты обычно…', o: [['p', 'Договариваюсь с людьми и выступаю'], ['e', 'Делаю техническую часть'], ['c', 'Придумываю идею и оформление'], ['a', 'Ищу данные и проверяю факты']] },
+  ];
+
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const goal = (name, p) => { if (YM_ID && window.ym) ym(YM_ID, 'reachGoal', name, p); };
+
+  // most frequent answer wins; a tie goes to the earliest answer (first instinct)
+  function pickType(answers) {
+    const n = {};
+    answers.forEach(t => n[t] = (n[t] || 0) + 1);
+    const max = Math.max(...Object.values(n));
+    return answers.find(t => n[t] === max);
+  }
+
+  let answers = [];
+  function renderQuestion() {
+    const i = answers.length, { q, o } = QUESTIONS[i];
+    $('step').textContent = `Вопрос ${i + 1} из ${QUESTIONS.length}`;
+    document.querySelectorAll('.bars span').forEach((s, k) => s.classList.toggle('on', k <= i));
+    $('question').textContent = q;
+    $('options').replaceChildren(...o.map(([type, label]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.textContent = label; b.setAttribute('aria-pressed', 'false');
+      b.onclick = () => choose(b, type);
+      return b;
+    }));
+  }
+  function choose(btn, type) {
+    btn.setAttribute('aria-pressed', 'true');
+    document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+    answers.push(type);
+    if (answers.length === 1) goal('quiz_start');
+    setTimeout(() => answers.length < QUESTIONS.length ? renderQuestion() : showResult(pickType(answers)), 220);
+  }
+  let resultType;
+  function showResult(t) {
+    resultType = t;
+    const r = TYPES[t];
+    $('rIcon').textContent = r.icon; $('rName').textContent = r.name; $('rText').textContent = r.text;
+    $('rDirs').replaceChildren(...r.dirs.map(d => Object.assign(document.createElement('li'), { textContent: d })));
+    $('quizBody').hidden = true; $('result').hidden = false;
+    goal('quiz_done', { type: r.name });
+  }
+  $('againBtn').onclick = () => { answers = []; $('result').hidden = true; $('quizBody').hidden = false; renderQuestion(); };
+
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; setTimeout(() => t.hidden = true, 2200); }
+  async function share(text, url, what) {
+    if (navigator.share) {
+      try { await navigator.share({ text, url }); goal('share', { what }); } catch (e) {}
+      return;
+    }
+    try { await navigator.clipboard.writeText(`${text} ${url}`); toast('Ссылка скопирована, вставь её в чат'); goal('share', { what }); }
+    catch (e) { prompt('Скопируй ссылку:', `${text} ${url}`); }
+  }
+  const pageUrl = extra => location.origin + location.pathname + '?utm_source=share' + extra;
+  $('shareBtn').onclick = () => share(`Мой тип по мини-тесту — ${TYPES[resultType].name} ${TYPES[resultType].icon}. А у тебя какой? 3 вопроса:`, pageUrl('&t=' + resultType), 'result');
+  $('parentsBtn').onclick = () => share('Посмотри: Ventorme помогает выбрать профессию и поступить в вуз, старт бесплатный.', pageUrl('&utm_content=parents'), 'parents');
+
+  // came from a friend's shared result
+  const ft = TYPES[params.get('t')];
+  if (ft) { $('friend').textContent = `Твой друг получил тип «${ft.name}». А ты кто?`; $('friend').hidden = false; }
+
+  // In-app browsers (Instagram, Facebook, TikTok, Telegram, any Android WebView, iOS WKWebView)
+  // are where Google refuses its sign-in. ?inapp=1 previews the note in a normal browser.
+  const ua = navigator.userAgent;
+  const inApp = params.has('inapp') || /Instagram|FBAN|FBAV|FB_IAB|musical_ly|BytedanceWebview|TikTok|Telegram/i.test(ua)
+    || /; wv\)/.test(ua) || (/iPhone|iPad|iPod/.test(ua) && !/Safari\//.test(ua));
+  if (inApp) {
+    const app = (ua.match(/Instagram|Telegram|TikTok/i) || [/FBAN|FBAV|FB_IAB/.test(ua) ? 'Facebook' : 'приложения'])[0];
+    document.querySelectorAll('.app').forEach(s => s.textContent = app);
+    document.documentElement.classList.add('inapp');
+    if (/Android/.test(ua) || params.get('inapp') === 'android') {
+      document.documentElement.classList.add('android');
+      const intent = 'intent://' + TEAM_LINK.replace('https://', '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(TEAM_LINK) + ';end';
+      document.querySelectorAll('a.chrome').forEach(a => a.href = intent);
+    }
+    goal('inapp_seen', { app });
+  }
+
+  document.querySelectorAll('a.cta').forEach(a => {
+    if (!a.classList.contains('chrome') && a.href !== TEAM_LINK) console.error('Wrong registration link:', a.href);
+    a.addEventListener('click', () => goal('cta', { where: a.dataset.where }));
+  });
+
+  if (YM_ID) {
+    (function (m, e, t, r, i, k, a) { m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); }; m[i].l = 1 * new Date(); k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a); })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+    ym(YM_ID, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true });
+    $('ymNote').hidden = false;
+  }
+
+  renderQuestion();
+</script>
+</body>
+</html>
