@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Какая профессия тебе подходит? Мини-тест Ventorme</title>
-<meta name="description" content="3 вопроса без регистрации и быстрый результат. Точный разбор профессий бесплатно в Ventorme.">
+<meta name="description" content="6 вопросов без регистрации: твой тип, подходящие направления и следующий шаг. Точный разбор бесплатно в Ventorme.">
 <meta property="og:title" content="Какая профессия тебе подходит?">
-<meta property="og:description" content="3 вопроса без регистрации. Точный разбор бесплатно в Ventorme.">
+<meta property="og:description" content="6 вопросов без регистрации: узнай свой тип. Точный разбор бесплатно в Ventorme.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#3B47FF">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,6 +62,7 @@
   .lead { margin: 0; color: #DDE0FF; font-size: 16px; max-width: 34ch; }
 
   .quiz {
+    scroll-margin-top: 64px;
     background: var(--lime); border-radius: 24px; padding: 16px;
     box-shadow: 0 24px 48px -24px rgba(28, 28, 40, .45);
   }
@@ -77,21 +78,30 @@
     text-align: left; border: 2px solid transparent; border-radius: 14px; background: var(--white);
     font-size: 15px; line-height: 1.3; cursor: pointer;
   }
-  .opt::before { content: ""; flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--blue); }
+  .opt .em { flex: none; width: 28px; font-size: 22px; line-height: 1; text-align: center; }
   .opt:hover { border-color: rgba(59, 71, 255, .35); }
-  .opt[aria-pressed="true"] { border-color: var(--blue); }
-  .opt[aria-pressed="true"]::before { background: var(--blue); box-shadow: inset 0 0 0 3px var(--white); }
+  .opt[aria-pressed="true"] { border-color: var(--blue); background: #EEF0FF; }
 
   .result[hidden], .quiz-body[hidden] { display: none; }
   .result { animation: rise .35s ease-out; }
-  .rtype { display: flex; align-items: center; gap: 12px; margin: 4px 0 8px; }
-  .rtype .ic { font-size: 40px; line-height: 1; }
-  .rtype h2 { margin: 0; font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; }
-  .rtype small { display: block; font-size: 14px; font-weight: 500; }
+  .rtype { display: flex; align-items: center; gap: 12px; margin: 2px 0 8px; }
+  .rtype .ic { font-size: 44px; line-height: 1; }
+  .rtype h2 { margin: 0; font-size: 28px; line-height: 1.05; letter-spacing: -0.025em; }
+  .rtype small { display: block; font-size: 14px; font-weight: 500; letter-spacing: 0; }
   .result p { margin: 0 0 10px; font-size: 15px; }
+  .scores { display: grid; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+  .scores li { display: grid; grid-template-columns: 112px 1fr 40px; align-items: center; gap: 8px; font-size: 14px; }
+  .scores i { height: 8px; border-radius: 4px; background: rgba(28, 28, 40, .12); overflow: hidden; }
+  .scores i::before { content: ""; display: block; height: 100%; width: var(--w); background: var(--blue); border-radius: 4px; animation: grow .6s ease-out; }
+  .scores b { text-align: right; }
   .dirs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
   .dirs li { background: var(--white); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 500; }
-  .fine { font-size: 13px !important; color: #3D3F12; }
+  .tip { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--white); font-size: 14px; line-height: 1.4; }
+  .tip b { display: block; margin-bottom: 2px; }
+  .locked { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 10px; font-size: 14px; font-weight: 500; }
+  .btn small { display: block; font-size: 13px; font-weight: 500; opacity: .85; }
+  .btn.two { flex-direction: column; min-height: 60px; line-height: 1.2; }
+  .fine { font-size: 13px !important; color: #3D3F12; margin-top: 10px !important; }
   .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .ghost {
     min-height: 44px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--ink);
@@ -152,7 +162,8 @@
   .toast[hidden] { display: none; }
 
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .result { animation: none; } .bars span { transition: none; } }
+  @keyframes grow { from { width: 0; } }
+  @media (prefers-reduced-motion: reduce) { .result, .scores i::before { animation: none; } .bars span { transition: none; } }
 
   @media (min-width: 900px) {
     .hero { background: linear-gradient(var(--blue) 0 calc(100% - 64px), var(--paper) 0); padding-top: 48px; }
@@ -178,14 +189,14 @@
     <div class="wrap">
       <div class="intro">
         <h1>Какая профессия тебе подходит?</h1>
-        <p class="lead">Ответь на 3 вопроса прямо здесь, без регистрации. Точный разбор бесплатно покажет Ventorme.</p>
+        <p class="lead">6 вопросов без регистрации. В конце твой тип и что делать дальше.</p>
       </div>
 
       <div>
         <div class="quiz" id="quiz" aria-live="polite">
           <div class="quiz-body" id="quizBody">
-            <div class="quiz-meta"><span id="step">Вопрос 1 из 3</span><span>без регистрации</span></div>
-            <div class="bars" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+            <div class="quiz-meta"><span id="step">Вопрос 1 из 6</span><span>без регистрации</span></div>
+            <div class="bars" id="bars" aria-hidden="true"></div>
             <p class="friend" id="friend" hidden></p>
             <p class="q" id="question"></p>
             <div class="opts" id="options"></div>
@@ -194,13 +205,16 @@
           <div class="result" id="result" hidden>
             <div class="rtype">
               <span class="ic" id="rIcon"></span>
-              <h2><small>Твой тип</small><span id="rName"></span></h2>
+              <h2><small>Твой тип</small><span id="rName"></span><small id="rMix"></small></h2>
             </div>
             <p id="rText"></p>
-            <p><b>Часто подходят:</b></p>
+            <ul class="scores" id="rScores" aria-label="Твои ответы по типам"></ul>
+            <p><b>Тебе могут подойти:</b></p>
             <ul class="dirs" id="rDirs"></ul>
-            <p class="fine">Это быстрый предпросмотр по трём ответам, не диагноз. Точный результат, 3 направления и разбор сильных сторон, Ventorme покажет бесплатно после регистрации.</p>
-            <a class="btn cta" data-where="result" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Зарегистрироваться и узнать точно</a>
+            <p class="locked"><span aria-hidden="true">🔒</span><span>В Ventorme: 3 точных направления и разбор сильных сторон</span></p>
+            <a class="btn two cta" data-where="result" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Открыть точный результат<small>бесплатная регистрация на ventorme.ai</small></a>
+            <div class="tip"><b id="rPlace"></b><span id="rTip"></span></div>
+            <p class="fine">Это быстрый предпросмотр по твоим ответам, не диагноз.</p>
             <div class="inapp-note">
               <b>Страница открыта внутри <span class="app">приложения</span></b>
               Google не даёт входить через свой аккаунт во встроенных браузерах. Регистрируйся по почте или открой страницу в обычном браузере<span class="ios">: нажми ⋯ в углу и выбери «Открыть в браузере»</span>.
@@ -293,60 +307,93 @@
   // Yandex Metrica counter id (metrika.yandex.ru). 0 = off, no tracking and no notice.
   const YM_ID = 0;
 
-  const TYPES = {
-    a: { icon: '🧠', name: 'Аналитик', text: 'Тебе нравится находить закономерности и проверять выводы цифрами.', dirs: ['Data Science', 'Экономика и финансы', 'Бизнес-аналитика'] },
-    c: { icon: '🎨', name: 'Творец', text: 'Тебя заряжают идеи и то, как вещи выглядят и звучат.', dirs: ['UX/UI-дизайн', 'Медиа и коммуникации', 'Архитектура'] },
-    p: { icon: '💬', name: 'Коммуникатор', text: 'Тебе интересны люди: понимать их, объяснять, договариваться.', dirs: ['Психология', 'Международные отношения', 'Маркетинг'] },
-    e: { icon: '🛠️', name: 'Инженер', text: 'Тебе интересно, как всё устроено, и хочется собирать это самому.', dirs: ['Computer Science', 'Робототехника', 'Инженерия'] },
+  const BASE = { a: 'Аналитик', c: 'Творец', p: 'Коммуникатор', e: 'Инженер' };
+  // a clear leader gives a pure type, a close race blends the top two (key = both letters, alphabetical)
+  const PROFILES = {
+    a: { icon: '🧠', name: 'Аналитик', text: 'Ты ищешь закономерности и доверяешь цифрам больше, чем громким словам.', dirs: ['Data Science', 'Экономика и финансы', 'Бизнес-аналитика'] },
+    c: { icon: '🎨', name: 'Творец', text: 'Тебе важно, как вещи выглядят, звучат и цепляют людей.', dirs: ['UX/UI-дизайн', 'Медиа и кино', 'Архитектура'] },
+    p: { icon: '💬', name: 'Коммуникатор', text: 'Ты понимаешь людей и умеешь их объединять.', dirs: ['Психология', 'Международные отношения', 'Маркетинг'] },
+    e: { icon: '🛠️', name: 'Инженер', text: 'Тебе мало пользоваться вещами: хочется понять, как они устроены, и собрать свои.', dirs: ['Computer Science', 'Робототехника', 'Инженерия'] },
+    ac: { icon: '🔭', name: 'Визионер', text: 'Ты видишь и данные, и красоту, и умеешь доказать красивую идею цифрами.', dirs: ['Продуктовый дизайн', 'Маркетинговая аналитика', 'Архитектура'] },
+    ae: { icon: '🔬', name: 'Исследователь', text: 'Тебе интересно докопаться до сути и проверить её экспериментом.', dirs: ['Computer Science', 'Data Science', 'Финтех'] },
+    ap: { icon: '♟️', name: 'Стратег', text: 'Ты просчитываешь ходы наперёд и умеешь убедить людей пойти за планом.', dirs: ['Экономика', 'Менеджмент', 'Международные отношения'] },
+    ce: { icon: '🚀', name: 'Изобретатель', text: 'Ты придумываешь вещи, которых ещё нет, и понимаешь, как их собрать.', dirs: ['Геймдев', 'Промышленный дизайн', 'Робототехника'] },
+    cp: { icon: '🎬', name: 'Сторителлер', text: 'Ты умеешь рассказать историю так, что её пересказывают другим.', dirs: ['Журналистика и медиа', 'Маркетинг и реклама', 'Кино'] },
+    ep: { icon: '🧩', name: 'Продакт', text: 'Ты понимаешь и технологии, и людей, которые ими пользуются.', dirs: ['IT-менеджмент', 'EdTech', 'Медицинские технологии'] },
+  };
+  // the last question picks a study place; its tip points at what Ventorme gives free (IELTS/SAT level checks)
+  const PLACES = {
+    kz: { em: '🇰🇿', label: 'В Казахстане', tip: 'Гранты дают по баллам ЕНТ, а части вузов нужен IELTS. В Ventorme есть калькулятор гранта по ЕНТ, а уровень IELTS можно проверить бесплатно.' },
+    us: { em: '🇺🇸', label: 'В США', tip: 'Там часто смотрят SAT и тест по английскому. Уровень SAT и IELTS можно бесплатно проверить в Ventorme.' },
+    eu: { em: '🇬🇧', label: 'В Великобритании или Европе', tip: 'Там обычно просят IELTS или другой тест по английскому. Свой уровень IELTS можно бесплатно проверить в Ventorme.' },
+    asia: { em: '🌏', label: 'В Азии', tip: 'Вузы с обучением на английском часто просят IELTS или TOEFL, на китайском — HSK. Уровень IELTS можно бесплатно проверить в Ventorme.' },
+    no: { em: '🤷', label: 'Пока не знаю', tip: 'Это нормально: сначала направление, потом страна. Точный разбор в Ventorme подскажет, с чего начать.' },
   };
   const QUESTIONS = [
-    { q: 'Свободный вечер. Что выберешь?', o: [['a', 'Задачу или головоломку, где надо найти ответ'], ['c', 'Нарисовать, смонтировать видео, что-то сочинить'], ['p', 'Встретиться с друзьями или помочь кому-то разобраться'], ['e', 'Разобрать гаджет, собрать модель, написать код']] },
-    { q: 'Какой предмет тебе ближе?', o: [['e', 'Физика, информатика'], ['a', 'Математика'], ['p', 'История, общество, языки'], ['c', 'Литература, искусство, музыка']] },
-    { q: 'В групповом проекте ты обычно…', o: [['p', 'Договариваюсь с людьми и выступаю'], ['e', 'Делаю техническую часть'], ['c', 'Придумываю идею и оформление'], ['a', 'Ищу данные и проверяю факты']] },
+    { q: 'Тебе дают 1 000 000 ₸ на летний проект. Что запускаешь?', o: [['e', '🛠️', 'Собираю робота или пишу своё приложение'], ['c', '🎨', 'Свой бренд мерча или канал с роликами'], ['p', '🎪', 'Фестиваль или лагерь для друзей'], ['a', '📈', 'Вкладываю и считаю, как приумножить']] },
+    { q: 'Открываешь экранное время. Где больше всего часов?', o: [['c', '🎬', 'CapCut и Pinterest: монтирую, рисую, собираю идеи'], ['p', '💬', 'Чаты и созвоны с друзьями'], ['a', '♟️', 'Шахматы, стратегии, задачки'], ['e', '🔧', 'Видео «как это устроено внутри»']] },
+    { q: 'В классном чате ты тот, кто…', o: [['a', '📊', 'Скидывает расписание и считает, кто сколько должен'], ['e', '🆘', 'Чинит, когда у кого-то «ничего не грузит»'], ['c', '😂', 'Делает мемы и стикеры'], ['p', '🤝', 'Мирит всех, когда начинается спор']] },
+    { q: 'Какую суперсилу берёшь?', o: [['p', '🫶', 'Понимать, что чувствует любой человек'], ['a', '🔍', 'Видеть закономерности, которых не замечают другие'], ['e', '⚡', 'Понимать, как работает любой механизм'], ['c', '✨', 'Придумывать идеи, от которых все говорят «вау»']] },
+    { q: 'Через 10 лет тебя зовут на подкаст. О чём выпуск?', o: [['e', '🚀', 'О технологии, которую создала твоя команда'], ['c', '🎥', 'О твоём фильме, игре или бренде'], ['a', '💡', 'О решении на цифрах, которое сэкономило компании миллионы'], ['p', '🌍', 'О проекте, который помог тысячам людей']] },
+    { q: 'И последнее: где хочешь учиться?', place: true, o: Object.entries(PLACES).map(([k, v]) => [k, v.em, v.label]) },
   ];
 
   const $ = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
   const goal = (name, p) => { if (YM_ID && window.ym) ym(YM_ID, 'reachGoal', name, p); };
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // most frequent answer wins; a tie goes to the earliest answer (first instinct)
-  function pickType(answers) {
-    const n = {};
-    answers.forEach(t => n[t] = (n[t] || 0) + 1);
-    const max = Math.max(...Object.values(n));
-    return answers.find(t => n[t] === max);
+  // Count answers per type. A leader 2+ ahead is a pure type, otherwise the top two blend.
+  // Ties keep answer order (sort is stable), so the earlier answer wins.
+  function pickProfile(answers) {
+    const n = { a: 0, c: 0, p: 0, e: 0 };
+    answers.forEach(t => n[t]++);
+    const order = [...new Set(answers)].sort((x, y) => n[y] - n[x]), [top, second] = order;
+    const key = !second || n[top] - n[second] >= 2 ? top : [top, second].sort().join('');
+    return { key, top, second, n, order };
   }
 
-  let answers = [];
+  const bars = $('bars');
+  bars.replaceChildren(...QUESTIONS.map(() => document.createElement('span')));
+  let answers = [], place = 'no', result;
   function renderQuestion() {
-    const i = answers.length, { q, o } = QUESTIONS[i];
+    const i = answers.length, { q, o, place: isPlace } = QUESTIONS[i];
     $('step').textContent = `Вопрос ${i + 1} из ${QUESTIONS.length}`;
-    document.querySelectorAll('.bars span').forEach((s, k) => s.classList.toggle('on', k <= i));
+    [...bars.children].forEach((s, k) => s.classList.toggle('on', k <= i));
     $('question').textContent = q;
-    $('options').replaceChildren(...o.map(([type, label]) => {
+    $('options').replaceChildren(...o.map(([value, em, label]) => {
       const b = document.createElement('button');
-      b.type = 'button'; b.className = 'opt'; b.textContent = label; b.setAttribute('aria-pressed', 'false');
-      b.onclick = () => choose(b, type);
+      b.type = 'button'; b.className = 'opt'; b.setAttribute('aria-pressed', 'false');
+      b.append(Object.assign(document.createElement('span'), { className: 'em', textContent: em, ariaHidden: 'true' }), label);
+      b.onclick = () => choose(b, value, isPlace);
       return b;
     }));
   }
-  function choose(btn, type) {
+  function choose(btn, value, isPlace) {
     btn.setAttribute('aria-pressed', 'true');
     document.querySelectorAll('.opt').forEach(b => b.disabled = true);
-    answers.push(type);
-    if (answers.length === 1) goal('quiz_start');
-    setTimeout(() => answers.length < QUESTIONS.length ? renderQuestion() : showResult(pickType(answers)), 220);
+    if (isPlace) place = value; else answers.push(value);
+    if (answers.length === 1 && !isPlace) goal('quiz_start');
+    setTimeout(() => isPlace ? showResult() : renderQuestion(), 220);
   }
-  let resultType;
-  function showResult(t) {
-    resultType = t;
-    const r = TYPES[t];
+  function showResult() {
+    result = pickProfile(answers);
+    const r = PROFILES[result.key], pl = PLACES[place];
     $('rIcon').textContent = r.icon; $('rName').textContent = r.name; $('rText').textContent = r.text;
+    $('rMix').textContent = result.key.length === 2 ? `${BASE[result.top]} + ${BASE[result.second]}` : '';
+    $('rScores').replaceChildren(...result.order.map(t => {
+      const pct = Math.round(100 * result.n[t] / answers.length), li = document.createElement('li');
+      li.innerHTML = `<span>${BASE[t]}</span><i style="--w:${pct}%"></i><b>${pct}%</b>`;
+      return li;
+    }));
     $('rDirs').replaceChildren(...r.dirs.map(d => Object.assign(document.createElement('li'), { textContent: d })));
+    $('rPlace').textContent = `${pl.em} ${place === 'no' ? 'Страна пока не выбрана' : 'Учиться ' + pl.label[0].toLowerCase() + pl.label.slice(1)}`;
+    $('rTip').textContent = pl.tip;
     $('quizBody').hidden = true; $('result').hidden = false;
-    goal('quiz_done', { type: r.name });
+    $('quiz').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    goal('quiz_done', { type: r.name, place });
   }
-  $('againBtn').onclick = () => { answers = []; $('result').hidden = true; $('quizBody').hidden = false; renderQuestion(); };
+  $('againBtn').onclick = () => { answers = []; place = 'no'; $('result').hidden = true; $('quizBody').hidden = false; renderQuestion(); };
 
   function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; setTimeout(() => t.hidden = true, 2200); }
   async function share(text, url, what) {
@@ -358,12 +405,25 @@
     catch (e) { prompt('Скопируй ссылку:', `${text} ${url}`); }
   }
   const pageUrl = extra => location.origin + location.pathname + '?utm_source=share' + extra;
-  $('shareBtn').onclick = () => share(`Мой тип по мини-тесту — ${TYPES[resultType].name} ${TYPES[resultType].icon}. А у тебя какой? 3 вопроса:`, pageUrl('&t=' + resultType), 'result');
+  $('shareBtn').onclick = () => {
+    const r = PROFILES[result.key];
+    share(`Мой тип — ${r.name} ${r.icon}. А у тебя какой? 6 вопросов, минута:`, pageUrl('&t=' + result.key), 'result');
+  };
   $('parentsBtn').onclick = () => share('Посмотри: Ventorme помогает выбрать профессию и поступить в вуз, старт бесплатный.', pageUrl('&utm_content=parents'), 'parents');
 
   // came from a friend's shared result
-  const ft = TYPES[params.get('t')];
-  if (ft) { $('friend').textContent = `Твой друг получил тип «${ft.name}». А ты кто?`; $('friend').hidden = false; }
+  const ft = PROFILES[params.get('t')];
+  if (ft) { $('friend').textContent = `Твой друг получил тип «${ft.name}» ${ft.icon}. А ты кто?`; $('friend').hidden = false; }
+
+  // ?selftest runs the profile rule checks in the console
+  if (params.has('selftest')) {
+    const k = a => pickProfile(a).key;
+    console.assert(k(['e', 'e', 'e', 'c', 'a']) === 'e', 'leader 2+ ahead is a pure type');
+    console.assert(k(['e', 'c', 'e', 'c', 'a']) === 'ce', 'two-way tie blends');
+    console.assert(k(['a', 'e', 'c', 'p', 'a']) === 'ae', 'tie for second goes to the earlier answer');
+    console.assert(k(['p', 'p', 'p', 'p', 'p']) === 'p', 'one type only');
+    console.log('selftest done');
+  }
 
   // In-app browsers (Instagram, Facebook, TikTok, Telegram, any Android WebView, iOS WKWebView)
   // are where Google refuses its sign-in. ?inapp=1 previews the note in a normal browser.
