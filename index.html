@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Какая профессия тебе подходит? Мини-тест Ventorme</title>
-<meta name="description" content="6 вопросов без регистрации: твой тип, подходящие направления и следующий шаг. Точный разбор бесплатно в Ventorme.">
+<meta name="description" content="3 вопроса без регистрации: твой тип и подходящие направления. Точный разбор бесплатно в Ventorme.">
 <meta property="og:title" content="Какая профессия тебе подходит?">
-<meta property="og:description" content="6 вопросов без регистрации: узнай свой тип. Точный разбор бесплатно в Ventorme.">
+<meta property="og:description" content="3 вопроса без регистрации: узнай свой тип. Точный разбор бесплатно в Ventorme.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#3B47FF">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,8 +96,6 @@
   .scores b { text-align: right; }
   .dirs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
   .dirs li { background: var(--white); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 500; }
-  .tip { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--white); font-size: 14px; line-height: 1.4; }
-  .tip b { display: block; margin-bottom: 2px; }
   .locked { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 10px; font-size: 14px; font-weight: 500; }
   .btn small { display: block; font-size: 13px; font-weight: 500; opacity: .85; }
   .btn.two { flex-direction: column; min-height: 60px; line-height: 1.2; }
@@ -189,13 +187,13 @@
     <div class="wrap">
       <div class="intro">
         <h1>Какая профессия тебе подходит?</h1>
-        <p class="lead">6 вопросов без регистрации. В конце твой тип и что делать дальше.</p>
+        <p class="lead">3 вопроса без регистрации. В конце твой тип и профессии, которые тебе подходят.</p>
       </div>
 
       <div>
         <div class="quiz" id="quiz" aria-live="polite">
           <div class="quiz-body" id="quizBody">
-            <div class="quiz-meta"><span id="step">Вопрос 1 из 6</span><span>без регистрации</span></div>
+            <div class="quiz-meta"><span id="step">Вопрос 1 из 3</span><span>без регистрации</span></div>
             <div class="bars" id="bars" aria-hidden="true"></div>
             <p class="friend" id="friend" hidden></p>
             <p class="q" id="question"></p>
@@ -213,7 +211,6 @@
             <ul class="dirs" id="rDirs"></ul>
             <p class="locked"><span aria-hidden="true">🔒</span><span>В Ventorme: 3 точных направления и разбор сильных сторон</span></p>
             <a class="btn two cta" data-where="result" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Открыть точный результат<small>бесплатная регистрация на ventorme.ai</small></a>
-            <div class="tip"><b id="rPlace"></b><span id="rTip"></span></div>
             <p class="fine">Это быстрый предпросмотр по твоим ответам, не диагноз.</p>
             <div class="inapp-note">
               <b>Страница открыта внутри <span class="app">приложения</span></b>
@@ -321,21 +318,10 @@
     cp: { icon: '🎬', name: 'Сторителлер', text: 'Ты умеешь рассказать историю так, что её пересказывают другим.', dirs: ['Журналистика и медиа', 'Маркетинг и реклама', 'Кино'] },
     ep: { icon: '🧩', name: 'Продакт', text: 'Ты понимаешь и технологии, и людей, которые ими пользуются.', dirs: ['IT-менеджмент', 'EdTech', 'Медицинские технологии'] },
   };
-  // the last question picks a study place; its tip points at what Ventorme gives free (IELTS/SAT level checks)
-  const PLACES = {
-    kz: { em: '🇰🇿', label: 'В Казахстане', tip: 'Гранты дают по баллам ЕНТ, а части вузов нужен IELTS. В Ventorme есть калькулятор гранта по ЕНТ, а уровень IELTS можно проверить бесплатно.' },
-    us: { em: '🇺🇸', label: 'В США', tip: 'Там часто смотрят SAT и тест по английскому. Уровень SAT и IELTS можно бесплатно проверить в Ventorme.' },
-    eu: { em: '🇬🇧', label: 'В Великобритании или Европе', tip: 'Там обычно просят IELTS или другой тест по английскому. Свой уровень IELTS можно бесплатно проверить в Ventorme.' },
-    asia: { em: '🌏', label: 'В Азии', tip: 'Вузы с обучением на английском часто просят IELTS или TOEFL, на китайском — HSK. Уровень IELTS можно бесплатно проверить в Ventorme.' },
-    no: { em: '🤷', label: 'Пока не знаю', tip: 'Это нормально: сначала направление, потом страна. Точный разбор в Ventorme подскажет, с чего начать.' },
-  };
   const QUESTIONS = [
-    { q: 'Тебе дают 1 000 000 ₸ на летний проект. Что запускаешь?', o: [['e', '🛠️', 'Собираю робота или пишу своё приложение'], ['c', '🎨', 'Свой бренд мерча или канал с роликами'], ['p', '🎪', 'Фестиваль или лагерь для друзей'], ['a', '📈', 'Вкладываю и считаю, как приумножить']] },
-    { q: 'Открываешь экранное время. Где больше всего часов?', o: [['c', '🎬', 'CapCut и Pinterest: монтирую, рисую, собираю идеи'], ['p', '💬', 'Чаты и созвоны с друзьями'], ['a', '♟️', 'Шахматы, стратегии, задачки'], ['e', '🔧', 'Видео «как это устроено внутри»']] },
-    { q: 'В классном чате ты тот, кто…', o: [['a', '📊', 'Скидывает расписание и считает, кто сколько должен'], ['e', '🆘', 'Чинит, когда у кого-то «ничего не грузит»'], ['c', '😂', 'Делает мемы и стикеры'], ['p', '🤝', 'Мирит всех, когда начинается спор']] },
-    { q: 'Какую суперсилу берёшь?', o: [['p', '🫶', 'Понимать, что чувствует любой человек'], ['a', '🔍', 'Видеть закономерности, которых не замечают другие'], ['e', '⚡', 'Понимать, как работает любой механизм'], ['c', '✨', 'Придумывать идеи, от которых все говорят «вау»']] },
-    { q: 'Через 10 лет тебя зовут на подкаст. О чём выпуск?', o: [['e', '🚀', 'О технологии, которую создала твоя команда'], ['c', '🎥', 'О твоём фильме, игре или бренде'], ['a', '💡', 'О решении на цифрах, которое сэкономило компании миллионы'], ['p', '🌍', 'О проекте, который помог тысячам людей']] },
-    { q: 'И последнее: где хочешь учиться?', place: true, o: Object.entries(PLACES).map(([k, v]) => [k, v.em, v.label]) },
+    { q: 'Свободный вечер. Что выберешь?', o: [['a', '🧩', 'Задачу или головоломку, где надо найти ответ'], ['c', '🎨', 'Нарисовать, смонтировать видео, что-то сочинить'], ['p', '💬', 'Встретиться с друзьями или помочь кому-то разобраться'], ['e', '🛠️', 'Разобрать гаджет, собрать модель, написать код']] },
+    { q: 'Какой предмет тебе ближе?', o: [['e', '💻', 'Физика, информатика'], ['a', '📐', 'Математика'], ['p', '🌍', 'История, общество, языки'], ['c', '🎭', 'Литература, искусство, музыка']] },
+    { q: 'В групповом проекте ты обычно…', o: [['p', '🎤', 'Договариваюсь с людьми и выступаю'], ['e', '⚙️', 'Делаю техническую часть'], ['c', '💡', 'Придумываю идею и оформление'], ['a', '📊', 'Ищу данные и проверяю факты']] },
   ];
 
   const $ = id => document.getElementById(id);
@@ -355,9 +341,9 @@
 
   const bars = $('bars');
   bars.replaceChildren(...QUESTIONS.map(() => document.createElement('span')));
-  let answers = [], place = 'no', result;
+  let answers = [], result;
   function renderQuestion() {
-    const i = answers.length, { q, o, place: isPlace } = QUESTIONS[i];
+    const i = answers.length, { q, o } = QUESTIONS[i];
     $('step').textContent = `Вопрос ${i + 1} из ${QUESTIONS.length}`;
     [...bars.children].forEach((s, k) => s.classList.toggle('on', k <= i));
     $('question').textContent = q;
@@ -365,20 +351,20 @@
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'opt'; b.setAttribute('aria-pressed', 'false');
       b.append(Object.assign(document.createElement('span'), { className: 'em', textContent: em, ariaHidden: 'true' }), label);
-      b.onclick = () => choose(b, value, isPlace);
+      b.onclick = () => choose(b, value);
       return b;
     }));
   }
-  function choose(btn, value, isPlace) {
+  function choose(btn, value) {
     btn.setAttribute('aria-pressed', 'true');
     document.querySelectorAll('.opt').forEach(b => b.disabled = true);
-    if (isPlace) place = value; else answers.push(value);
-    if (answers.length === 1 && !isPlace) goal('quiz_start');
-    setTimeout(() => isPlace ? showResult() : renderQuestion(), 220);
+    answers.push(value);
+    if (answers.length === 1) goal('quiz_start');
+    setTimeout(() => answers.length < QUESTIONS.length ? renderQuestion() : showResult(), 220);
   }
   function showResult() {
     result = pickProfile(answers);
-    const r = PROFILES[result.key], pl = PLACES[place];
+    const r = PROFILES[result.key];
     $('rIcon').textContent = r.icon; $('rName').textContent = r.name; $('rText').textContent = r.text;
     $('rMix').textContent = result.key.length === 2 ? `${BASE[result.top]} + ${BASE[result.second]}` : '';
     $('rScores').replaceChildren(...result.order.map(t => {
@@ -387,13 +373,11 @@
       return li;
     }));
     $('rDirs').replaceChildren(...r.dirs.map(d => Object.assign(document.createElement('li'), { textContent: d })));
-    $('rPlace').textContent = `${pl.em} ${place === 'no' ? 'Страна пока не выбрана' : 'Учиться ' + pl.label[0].toLowerCase() + pl.label.slice(1)}`;
-    $('rTip').textContent = pl.tip;
     $('quizBody').hidden = true; $('result').hidden = false;
     $('quiz').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-    goal('quiz_done', { type: r.name, place });
+    goal('quiz_done', { type: r.name });
   }
-  $('againBtn').onclick = () => { answers = []; place = 'no'; $('result').hidden = true; $('quizBody').hidden = false; renderQuestion(); };
+  $('againBtn').onclick = () => { answers = []; $('result').hidden = true; $('quizBody').hidden = false; renderQuestion(); };
 
   function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; setTimeout(() => t.hidden = true, 2200); }
   async function share(text, url, what) {
@@ -407,7 +391,7 @@
   const pageUrl = extra => location.origin + location.pathname + '?utm_source=share' + extra;
   $('shareBtn').onclick = () => {
     const r = PROFILES[result.key];
-    share(`Мой тип — ${r.name} ${r.icon}. А у тебя какой? 6 вопросов, минута:`, pageUrl('&t=' + result.key), 'result');
+    share(`Мой тип — ${r.name} ${r.icon}. А у тебя какой? 3 вопроса, 30 секунд:`, pageUrl('&t=' + result.key), 'result');
   };
   $('parentsBtn').onclick = () => share('Посмотри: Ventorme помогает выбрать профессию и поступить в вуз, старт бесплатный.', pageUrl('&utm_content=parents'), 'parents');
 
@@ -418,10 +402,10 @@
   // ?selftest runs the profile rule checks in the console
   if (params.has('selftest')) {
     const k = a => pickProfile(a).key;
-    console.assert(k(['e', 'e', 'e', 'c', 'a']) === 'e', 'leader 2+ ahead is a pure type');
-    console.assert(k(['e', 'c', 'e', 'c', 'a']) === 'ce', 'two-way tie blends');
-    console.assert(k(['a', 'e', 'c', 'p', 'a']) === 'ae', 'tie for second goes to the earlier answer');
-    console.assert(k(['p', 'p', 'p', 'p', 'p']) === 'p', 'one type only');
+    console.assert(k(['e', 'e', 'e']) === 'e', 'all three alike is a pure type');
+    console.assert(k(['e', 'c', 'e']) === 'ce', 'a 2-1 split blends');
+    console.assert(k(['a', 'e', 'c']) === 'ae', 'three different: the first two answers blend');
+    console.assert(k(['p', 'p', 'p']) === 'p', 'one type only');
     console.log('selftest done');
   }
 
