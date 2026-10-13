@@ -89,14 +89,18 @@
   .rtype h2 { margin: 0; font-size: 28px; line-height: 1.05; letter-spacing: -0.025em; }
   .rtype small { display: block; font-size: 14px; font-weight: 500; letter-spacing: 0; }
   .result p { margin: 0 0 10px; font-size: 15px; }
-  .scores { display: grid; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
-  .scores li { display: grid; grid-template-columns: 112px 1fr 40px; align-items: center; gap: 8px; font-size: 14px; }
-  .scores i { height: 8px; border-radius: 4px; background: rgba(28, 28, 40, .12); overflow: hidden; }
-  .scores i::before { content: ""; display: block; height: 100%; width: var(--w); background: var(--blue); border-radius: 4px; animation: grow .6s ease-out; }
-  .scores b { text-align: right; }
+  .result .why { font-weight: 500; }
   .dirs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
   .dirs li { background: var(--white); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 500; }
-  .locked { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 10px; font-size: 14px; font-weight: 500; }
+  .result .next { font-size: 14px; }
+  .example { margin: 0 0 14px; padding: 16px; border-radius: 18px; background: var(--white); border: 1px solid var(--line); max-width: 440px; }
+  .example figcaption { margin-bottom: 10px; font-weight: 700; }
+  .match { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .match li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--paper); }
+  .match b { color: var(--blue); }
+  .example p { margin: 10px 0 2px; font-weight: 500; }
+  .example small { color: var(--muted); font-size: 13px; }
+  .example + .note { margin: 0 0 18px; }
   .btn small { display: block; font-size: 13px; font-weight: 500; opacity: .85; }
   .btn.two { flex-direction: column; min-height: 60px; line-height: 1.2; }
   .fine { font-size: 13px !important; color: #3D3F12; margin-top: 10px !important; }
@@ -160,8 +164,7 @@
   .toast[hidden] { display: none; }
 
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  @keyframes grow { from { width: 0; } }
-  @media (prefers-reduced-motion: reduce) { .result, .scores i::before { animation: none; } .bars span { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .result { animation: none; } .bars span { transition: none; } }
 
   @media (min-width: 900px) {
     .hero { background: linear-gradient(var(--blue) 0 calc(100% - 64px), var(--paper) 0); padding-top: 48px; }
@@ -205,12 +208,12 @@
               <span class="ic" id="rIcon"></span>
               <h2><small>Твой тип</small><span id="rName"></span><small id="rMix"></small></h2>
             </div>
+            <p class="why" id="rWhy"></p>
             <p id="rText"></p>
-            <ul class="scores" id="rScores" aria-label="Твои ответы по типам"></ul>
             <p><b>Тебе могут подойти:</b></p>
             <ul class="dirs" id="rDirs"></ul>
-            <p class="locked"><span aria-hidden="true">🔒</span><span>В Ventorme: 3 точных направления и разбор сильных сторон</span></p>
-            <a class="btn two cta" data-where="result" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Открыть точный результат<small>бесплатная регистрация на ventorme.ai</small></a>
+            <p class="next"><b>Что дальше:</b> регистрация на ventorme.ai через Google или почту, потом стартовые вопросы. После них Ventorme покажет подробный результат (<a href="#example">пример ниже</a>).</p>
+            <a class="btn two cta" data-where="result" href="https://ventorme.ai/register?utm_source=hacknext&amp;utm_campaign=team-069">Продолжить в Ventorme<small>регистрация бесплатная</small></a>
             <p class="fine">Это быстрый предпросмотр по твоим ответам, не диагноз.</p>
             <div class="inapp-note">
               <b>Страница открыта внутри <span class="app">приложения</span></b>
@@ -237,6 +240,17 @@
   <section id="free">
     <div class="wrap">
       <h2 class="sec">Что бесплатно после регистрации</h2>
+      <figure class="example" id="example">
+        <figcaption>Так Ventorme показывает результат теста</figcaption>
+        <ol class="match">
+          <li><span>🧠 AI аналитик</span><b>100%</b></li>
+          <li><span>💻 Data science</span><b>96%</b></li>
+          <li><span>🛠️ Архитектура</span><b>89%</b></li>
+        </ol>
+        <p>+ разбор сильных сторон</p>
+        <small>Пример с ventorme.ai. У тебя будут свои профессии.</small>
+      </figure>
+      <p class="note">Чем это полезнее мини-теста на этой странице: здесь 3 ответа и 4 общих типа, а тест Ventorme из 8 вопросов называет конкретные профессии с процентом совпадения и разбирает твои сильные стороны.</p>
       <ul class="free">
         <li>Результат теста: 3 подходящих направления и разбор сильных сторон</li>
         <li>Проверка уровня английского для IELTS</li>
@@ -320,7 +334,7 @@
   };
   const QUESTIONS = [
     { q: 'Что тебе интереснее?', o: [['a', '🔢', 'Цифры и логика'], ['c', '🎨', 'Идеи и дизайн'], ['p', '💬', 'Люди и общение'], ['e', '💻', 'Техника и код']] },
-    { q: 'Что у тебя получается лучше всего?', o: [['a', '🧠', 'Решать задачи'], ['c', '✨', 'Придумывать'], ['p', '🎤', 'Объяснять и убеждать'], ['e', '🔧', 'Собирать и чинить']] },
+    { q: 'До сдачи проекта день. Что берёшь на себя?', o: [['a', '📊', 'Расчёты и факты'], ['c', '🎨', 'Идею и дизайн'], ['p', '🎤', 'Договориться и выступить'], ['e', '🔧', 'Техническую часть']] },
     { q: 'Друзья говорят, что ты…', o: [['a', '🤓', 'мозг компании'], ['c', '🎭', 'генератор идей'], ['p', '🫶', 'душа компании'], ['e', '⚙️', 'мастер на все руки']] },
   ];
 
@@ -341,6 +355,14 @@
     const order = [...new Set(answers)].sort((x, y) => n[y] - n[x]), [top, second] = order;
     const key = !second || n[top] - n[second] >= 2 ? top : [top, second].sort().join('');
     return { key, top, second, n, order };
+  }
+
+  // plain answer counts instead of percentages, so a 3-question preview doesn't read like a forecast
+  const TOPIC = { a: 'с анализом и логикой', c: 'с творческими задачами', p: 'с общением и людьми', e: 'с техническими задачами' };
+  function why({ order, n }, total) {
+    if (n[order[0]] === total) return `Все ${total} ответа связаны ${TOPIC[order[0]]}.`;
+    const [first, ...rest] = order;
+    return `${n[first]} ${n[first] === 1 ? 'ответ связан' : 'ответа связаны'} ${TOPIC[first]}, ` + rest.map(t => `${n[t]} — ${TOPIC[t]}`).join(', ') + '.';
   }
 
   const bars = $('bars');
@@ -371,11 +393,7 @@
     const r = PROFILES[result.key];
     $('rIcon').textContent = r.icon; $('rName').textContent = r.name; $('rText').textContent = r.text;
     $('rMix').textContent = result.key.length === 2 ? `${BASE[result.top]} + ${BASE[result.second]}` : '';
-    $('rScores').replaceChildren(...result.order.map(t => {
-      const pct = Math.round(100 * result.n[t] / answers.length), li = document.createElement('li');
-      li.innerHTML = `<span>${BASE[t]}</span><i style="--w:${pct}%"></i><b>${pct}%</b>`;
-      return li;
-    }));
+    $('rWhy').textContent = why(result, answers.length);
     $('rDirs').replaceChildren(...r.dirs.map(d => Object.assign(document.createElement('li'), { textContent: d })));
     $('quizBody').hidden = true; $('result').hidden = false;
     $('quiz').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
@@ -410,6 +428,10 @@
     console.assert(k(['e', 'c', 'e']) === 'ce', 'a 2-1 split blends');
     console.assert(k(['a', 'e', 'c']) === 'ae', 'three different: the first two answers blend');
     console.assert(k(['p', 'p', 'p']) === 'p', 'one type only');
+    const w = a => why(pickProfile(a), a.length);
+    console.assert(w(['e', 'e', 'e']) === 'Все 3 ответа связаны с техническими задачами.', 'all-alike sentence');
+    console.assert(w(['e', 'c', 'e']) === '2 ответа связаны с техническими задачами, 1 — с творческими задачами.', '2-1 sentence');
+    console.assert(w(['a', 'c', 'p']) === '1 ответ связан с анализом и логикой, 1 — с творческими задачами, 1 — с общением и людьми.', 'three-different sentence');
     console.log('selftest done');
   }
 
