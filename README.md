@@ -8,4 +8,5 @@ One static page, `index.html`, no build step. Every push to `main` redeploys on 
 - **Preview the in-app browser note** in a normal browser: add `?inapp=1` (iPhone wording) or `?inapp=android` to the URL.
 - **Preview a friend's shared link:** add `?t=` with a type: `a`, `c`, `p`, `e`, or a blend `ac`, `ae`, `ap`, `ce`, `cp`, `ep`.
 - **Check the type rule:** open with `?selftest` and look for "selftest done" in the console with no failed asserts.
+- **Share images:** `og.png` is the link preview in chats. For posting, open on a phone and save: `/kit/story.png` (Instagram story, leave the bottom free for the link sticker) and `/kit/qr-poster.png` (A4 poster, QR opens the page with `utm_source=qr`).
 - **Channel tags for inbound links:** `?utm_source=school_chat`, `instagram`, `qr`, `parents`. The share buttons add `utm_source=share` themselves.
