@@ -277,7 +277,7 @@
       <details><summary>Это правда бесплатно?</summary><p>Да, регистрация и стартовые функции бесплатны, карта не нужна. Тариф Plus можно подключить позже или не подключать вовсе.</p></details>
       <details><summary>На каком языке Ventorme?</summary><p>На русском, казахском и английском, а ещё на китайском и узбекском. Язык переключается на сайте.</p></details>
       <details><summary>Кто сделал эту страницу?</summary><p>Команда 069 хакатона HACKNEXT × Ventorme. Все кнопки регистрации ведут на официальный сайт ventorme.ai, регистрация и данные остаются там.</p></details>
-      <details><summary>Что с моими данными?</summary><p>Эта страница не собирает личные данные. При регистрации данные хранит Ventorme по своей <a href="https://ventorme.ai/privacy">политике конфиденциальности</a>.</p></details>
+      <details><summary>Что с моими данными?</summary><p>Эта страница не собирает личные данные: она только анонимно считает открытия и нажатия кнопок. При регистрации данные хранит Ventorme по своей <a href="https://ventorme.ai/privacy">политике конфиденциальности</a>.</p></details>
     </div>
   </section>
 
@@ -326,7 +326,11 @@
 
   const $ = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
-  const goal = (name, p) => { if (YM_ID && window.ym) ym(YM_ID, 'reachGoal', name, p); };
+  // anonymous random id per browser, so totals can say how many people, not just how many taps
+  const VID = (() => { try { return localStorage.vid ||= crypto.randomUUID().replace(/-/g, '').slice(0, 12); } catch (e) { return 'anon'; } })();
+  // views, finished quizzes and registration taps go to api/track.js; sendBeacon survives leaving the page
+  const track = (e, d = '') => { if (['view', 'quiz_done', 'cta'].includes(e)) navigator.sendBeacon?.('/api/track', JSON.stringify({ e, d, s: params.get('utm_source') || '', v: VID })); };
+  const goal = (name, p = {}) => { track(name, p.where || p.key); if (YM_ID && window.ym) ym(YM_ID, 'reachGoal', name, p); };
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Count answers per type. A leader 2+ ahead is a pure type, otherwise the top two blend.
@@ -375,7 +379,7 @@
     $('rDirs').replaceChildren(...r.dirs.map(d => Object.assign(document.createElement('li'), { textContent: d })));
     $('quizBody').hidden = true; $('result').hidden = false;
     $('quiz').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-    goal('quiz_done', { type: r.name });
+    goal('quiz_done', { type: r.name, key: result.key });
   }
   $('againBtn').onclick = () => { answers = []; $('result').hidden = true; $('quizBody').hidden = false; renderQuestion(); };
 
@@ -437,6 +441,7 @@
     $('ymNote').hidden = false;
   }
 
+  track('view');
   renderQuestion();
 </script>
 </body>
